@@ -1,5 +1,5 @@
 ## Структура папки ./src/
-```
+```bash
 ./src
 ├── App.jsx
 ├── components
@@ -22,8 +22,7 @@
 
 # Products Page:
 ### файл Products.jsx
-```
-import React from 'react';
+```javascript
 import products from '../data/products';
 import ProductCard from '../components/ProductCard';
 import '../styles/Products.css';
@@ -40,7 +39,7 @@ export default function Products(){
 }
 ```
 ### Products.css
-```
+```css
 .products-page {
     flex-direction: column;
     display: flex;
@@ -62,8 +61,7 @@ export default function Products(){
 
 # ProductCard component
 ### ProductCard.jsx
-```
-import React from 'react';
+```javascript
 import '../styles/ProductCard.css';
 
 export default function ProductCard({ product }) {
@@ -88,7 +86,7 @@ export default function ProductCard({ product }) {
 }
 ```
 ### ProductCard.css
-```
+```css
 .pc-card { 
     display: flex; 
     gap: 20px;
@@ -178,9 +176,10 @@ export default function ProductCard({ product }) {
     transform: translateY(-3px);
 }
 ```
+
 # Home Page:
 ### Home.jsx
-```
+```javascript
 import "../styles/Home.css";
 import { Link } from "react-router";
 export default function Home() {
@@ -212,7 +211,7 @@ export default function Home() {
 }
 ```
 ### Home.css
-```
+```css
 .home {
   padding: 50px;
   padding-top: 150px;
@@ -289,7 +288,7 @@ p {
 
 ## Header
 ### Header.jsx
-```
+```javascript
 import { Link } from 'react-router';
 import "../styles/Header.css";
 
@@ -303,15 +302,13 @@ export default function Header() {
         <Link to="/products">Товары</Link>
         <Link to="/contacts">Контакты</Link>
         <Link to="/order" className="order-link">Заказать</Link>
-        {/* <a href="/">main</a>
-        <a href="/products">products</a> */}
       </nav>
     </header>
   );
 }
 ```
 ### Header.css
-```
+```css
 .header {
   display: flex;
   justify-content: space-between;
@@ -353,7 +350,7 @@ export default function Header() {
 
 ## Footer
 ### Footer.jsx
-```
+```javascript
 import "../styles/Footer.css";
 
 function Footer() {
@@ -368,7 +365,7 @@ export default Footer;
 ```
 
 ### Footer.css
-```
+```css
 .footer {
   margin-top: 40px;
   padding: 20px;
@@ -381,7 +378,7 @@ export default Footer;
 ```
 
 ## App.jsx
-```
+```javascript
 import React from 'react';
 import { Routes, Route } from 'react-router';
 import Header from './components/Header';
@@ -406,11 +403,10 @@ export default function App(){
     </>
   );
 }
-
 ```
 
 ## main.jsx
-```
+```javascript
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
