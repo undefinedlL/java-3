@@ -62,6 +62,82 @@ public class GameLogic {
 		setSpace(arr, i, j-1, val);
 	}
 	
+	private void spaceEnd(int[][] arr) 
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				if (arr[i][j] == -2)
+				{
+					arr[i][j] = -1;
+				}
+			}
+		}
+	}
+	
+	private boolean testNewPaluba(int[][] arr, int i, int j) 
+	{
+		if (testArrayPos(i, j) == false) 
+		{
+			return false;
+		}
+		
+		if ( (arr[i][j] == 0) || (arr[i][j] == -2) )
+		{
+			return true;
+		}
+		return false;
+	}
+	// генерация четырехпалубного корабля
+	private void create4P(int[][] arr) 
+	{
+		// координаты головы корабля
+		int i = 0, j = 0;
+		
+		// создание первой палубы 4-х палубного корабля
+		i = (int)(Math.random()*10);
+		j = (int)(Math.random()*10);
+		
+		// помещаем значение
+		arr[i][j] = 4;
+		
+		spaceBegin(arr, i, j, -2);
+		
+		// определение направления
+		// 0 - вверх 1 - вправо, 2 - вниз, 3 - влево 
+		int direction = (int)(Math.random()*4);
+		
+		if (direction == 0) 
+		{
+			if (testNewPaluba(arr, i-3, j) == false)
+			{
+				direction = 2;
+			}
+		} 
+		else if (direction == 1)
+		{
+			if (testNewPaluba(arr, i, j+3) == false)
+			{
+				direction = 3;
+			}
+		}
+		else if (direction == 2)
+		{
+			if (testNewPaluba(arr, i+3, j) == false)
+			{
+				direction = 0;
+			}
+		}
+		else if (direction == 3)
+		{
+			if (testNewPaluba(arr, i, j-3) == false)
+			{
+				direction = 1;
+			}
+		}
+	}
+	
 	private void create1p(int arr[][])
 	{
 		for (int k = 1; k <= 4; k++)
