@@ -8,9 +8,14 @@ public class GameField extends JPanel {
 	private Timer timerDraw;
 	private Image bg, paluba, killed, hurt, computer_winner, player_winner, bomb;
 	private JButton begin_btn, quit_btn;
+	private GameLogic game_logic;
 	
 	public GameField()
 	{
+		// game logic
+		game_logic = new GameLogic();
+		game_logic.start();
+		
 		// загрузка изображений
 		try {
 			bg = ImageIO.read(new File("D:\\files\\bg.jpg"));
@@ -40,7 +45,9 @@ public class GameField extends JPanel {
 		begin_btn.setFont(new Font("serif", 0, 30));
 		begin_btn.setBounds(130, 450, 200, 80);
 		begin_btn.addActionListener(e -> {
-			
+	
+			game_logic.start();
+	
 		});
 		this.add(begin_btn);
 		
@@ -91,9 +98,28 @@ public class GameField extends JPanel {
 			gr.drawString(""+(char)('A'+i-1), 78+i*30, 93);
 			gr.drawString(""+(char)('A'+i-1), 478+i*30, 93);
 		}
+		
+		
+		// player
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				// Если это палуба корабля
+				if ( (game_logic.player_array[i][j] >= 1) && (game_logic.player_array[i][j] <= 4))
+				{
+					gr.drawImage(paluba, 500+j*30, 100 + i * 30, 30, 30, null);
+				}
+			}
+		}
 	}
 	
 }
+
+
+
+
+
 
 
 

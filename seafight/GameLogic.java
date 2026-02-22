@@ -19,7 +19,7 @@ public class GameLogic {
 			}
 		}
 		
-		player_array[0][0] = 1;
+		create1p(player_array);
 		
 	}
 	
@@ -41,6 +41,47 @@ public class GameLogic {
 		}
 	}
 	
+	private void setSpace(int[][] arr, int i, int j, int val)
+	{
+		if (testArrayPos(i, j))
+		{
+			setArrayPos(arr, i, j, val);
+		}
+		
+	}
+	
+	private void spaceBegin(int[][] arr, int i, int j, int val)
+	{
+		setSpace(arr, i-1, j-1, val);
+		setSpace(arr, i-1, j, val);
+		setSpace(arr, i-1, j+1, val);
+		setSpace(arr, i, j+1, val);
+		setSpace(arr, i+1, j+1, val);
+		setSpace(arr, i+1, j, val);
+		setSpace(arr, i+1, j-1, val);
+		setSpace(arr, i, j-1, val);
+	}
+	
+	private void create1p(int arr[][])
+	{
+		for (int k = 1; k <= 4; k++)
+		{
+			while (true)
+			{
+				// находим случайную позицию на игорвом поле
+				int i = (int)(Math.random() * 10);
+				int j = (int)(Math.random() * 10);
+				
+				// проверка
+				if (arr[i][j] == 0)
+				{
+					arr[i][j] = 1;
+					spaceBegin(arr, i, j, -1);
+					break;
+				}
+			}
+		}
+	}
 }
 
 
