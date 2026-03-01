@@ -1,121 +1,209 @@
-import java.awt.event.*;
-import javax.swing.*;
-import java.awt.*;
-import javax.imageio.*;
-import java.io.*;
 
-public class GameField extends JPanel {
-	private Timer timerDraw;
-	private Image bg, paluba, killed, hurt, computer_winner, player_winner, bomb;
-	private JButton begin_btn, quit_btn;
-	private GameLogic game_logic;
+public class GameLogic {
+	public int[][] player_array;
 	
-	public GameField()
+	public GameLogic()
 	{
-		// game logic
-		game_logic = new GameLogic();
-		game_logic.start();
+		player_array = new int[10][10];
 		
-		// загрузка изображений
-		try {
-			bg = ImageIO.read(new File("D:\\files\\bg.jpg"));
-			paluba = ImageIO.read(new File("D:\\files\\paluba.png"));
-			killed = ImageIO.read(new File("D:\\files\\ubit.png"));
-			hurt = ImageIO.read(new File("D:\\files\\ranen.png"));
-			computer_winner = ImageIO.read(new File("D:\\files\\end2.png"));
-			player_winner = ImageIO.read(new File("D:\\files\\end1.png"));
-			bomb = ImageIO.read(new File("D:\\files\\bomba.png"));
-
-		} catch(Exception ex) {
-			System.out.println("Какое-то изображение отсутствует.");
-		}
-		// запуск таймера
-		timerDraw = new Timer(50, (e) -> {
-			repaint();
-		});
-		timerDraw.start();
-		
-		this.setLayout(null);
-		
-		// кнопки
-		// Кнопка "Новая игра"
-		begin_btn = new JButton();
-		begin_btn.setText("Новая игра");
-		begin_btn.setForeground(Color.green);
-		begin_btn.setFont(new Font("serif", 0, 30));
-		begin_btn.setBounds(130, 450, 200, 80);
-		begin_btn.addActionListener(e -> {
-	
-			game_logic.start();
-	
-		});
-		this.add(begin_btn);
-		
-		// Кнопка "Выход"
-		quit_btn = new JButton();
-		quit_btn.setText("Выход");
-		quit_btn.setForeground(Color.red);
-		quit_btn.setFont(new Font("serif", 0, 30));
-		quit_btn.setBackground(Color.white); // new Color(0,0,0)  [ 0-255 ]
-		quit_btn.setBounds(530, 450, 200, 80);
-		quit_btn.addActionListener(e -> {
-			System.exit(0);
-		});
-		this.add(quit_btn);
 	}
 	
-	public void paintComponent(Graphics gr) 
+	public void start()
 	{
-		super.paintComponent(gr);
-	// labels
-		gr.drawImage(bg, 0, 0, 900, 600, null);
-		gr.setFont(new Font("serif", Font.BOLD, 40));
-		gr.setColor(Color.black);
-		gr.drawString("Компьютер", 150, 50);
-		gr.drawString("Игрок", 590, 50);
-	
-		// сетка
-		gr.setColor(Color.black);
-		for (int i = 0; i <= 10; i++) 
-		{
-			// сетка компьютера
-			gr.drawLine(100+i*30, 100, 100+i*30, 400);
-			gr.drawLine(100, 100+i*30, 400, 100+i*30);
-			// сетка игрока
-			gr.drawLine(500+i*30, 100, 500+i*30, 400);
-			gr.drawLine(500, 100+i*30, 800, 100+i*30);
-		}
-		
-		gr.setColor(Color.black);
-		gr.setFont(new Font("serif", Font.PLAIN, 25));
-		for (int i = 1; i <= 10; i++) 
-		{
-			// цифры
-			gr.drawString(""+i, 73, i*30+93);
-			gr.drawString(""+i, 478, i*30+93);
-			
-			// буквы
-			gr.drawString(""+(char)('A'+i-1), 78+i*30, 93);
-			gr.drawString(""+(char)('A'+i-1), 478+i*30, 93);
-		}
-		
-		
-		// player
+		// очищаем игровое поле игрока
 		for (int i = 0; i < 10; i++)
 		{
 			for (int j = 0; j < 10; j++)
 			{
-				// Если это палуба корабля
-				if ( (game_logic.player_array[i][j] >= 1) && (game_logic.player_array[i][j] <= 4))
+				player_array[i][j] = 0;
+			}
+		}
+		
+		create4P(player_array);
+		create1p(player_array);
+		
+	}
+	
+	private boolean testArrayPos(int i, int j)
+	{
+		if ( ( (i >= 0) && (i <= 9) ) && ( (j >= 0) && (j <= 9) ) )
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	private void setArrayPos(int[][] arr, int i, int j, int val)
+	{
+		// Если не происходит выход за границы массива
+		if (testArrayPos(i, j))
+		{
+			arr[i][j] = val;
+		}
+	}
+	
+	private void setSpace(int[][] arr, int i, int j, int val)
+	{
+		if (testArrayPos(i, j))
+		{
+			setArrayPos(arr, i, j, val);
+		}
+		
+	}
+	
+	private void spaceBegin(int[][] arr, int i, int j, int val)
+	{
+		setSpace(arr, i-1, j-1, val);
+		setSpace(arr, i-1, j, val);
+		setSpace(arr, i-1, j+1, val);
+		setSpace(arr, i, j+1, val);
+		setSpace(arr, i+1, j+1, val);
+		setSpace(arr, i+1, j, val);
+		setSpace(arr, i+1, j-1, val);
+		setSpace(arr, i, j-1, val);
+	}
+	
+	private void spaceEnd(int[][] arr) 
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				if (arr[i][j] == -2)
 				{
-					gr.drawImage(paluba, 500+j*30, 100 + i * 30, 30, 30, null);
+					arr[i][j] = -1;
 				}
 			}
 		}
 	}
 	
+	private boolean testNewPaluba(int[][] arr, int i, int j) 
+	{
+		if (testArrayPos(i, j) == false) 
+		{
+			return false;
+		}
+		
+		if ( (arr[i][j] == 0) || (arr[i][j] == -2) )
+		{
+			return true;
+		}
+		return false;
+	}
+	// генерация четырехпалубного корабля
+	private void create4P(int[][] arr) 
+	{
+		// координаты головы корабля
+		int i = 0, j = 0;
+		
+		// создание первой палубы 4-х палубного корабля
+		i = (int)(Math.random()*10);
+		j = (int)(Math.random()*10);
+		
+		// помещаем значение
+		arr[i][j] = 4;
+		
+		spaceBegin(arr, i, j, -2);
+		
+		// определение направления
+		// 0 - вверх 1 - вправо, 2 - вниз, 3 - влево 
+		int direction = (int)(Math.random()*4);
+		
+		if (direction == 0) 
+		{
+			if (testNewPaluba(arr, i-3, j) == false)
+			{
+				direction = 2;
+			}
+		} 
+		else if (direction == 1)
+		{
+			if (testNewPaluba(arr, i, j+3) == false)
+			{
+				direction = 3;
+			}
+		}
+		else if (direction == 2)
+		{
+			if (testNewPaluba(arr, i+3, j) == false)
+			{
+				direction = 0;
+			}
+		}
+		else if (direction == 3)
+		{
+			if (testNewPaluba(arr, i, j-3) == false)
+			{
+				direction = 1;
+			}
+		}
+		
+		if (direction == 0)
+		{
+			for (int r = 3; r >= 1; r--)
+			{
+				arr[i-r][j] = 4;
+				if (r == 3) {
+					spaceBegin(arr, i-r, j, -2);					
+				}
+			}
+		} 
+		else if (direction == 1) // right
+		{
+			for (int c = 3; c >= 1; c--)
+			{
+				arr[i][j+c] = 4;
+				if (c == 3) {
+					spaceBegin(arr, i, j+c, -2);					
+				}
+				
+			}
+		} 
+		else if (direction == 2) // вниз
+		{
+			for (int r = 3; r >= 1; r--)
+			{
+				arr[i+r][j] = 4;
+				if (r == 3) {
+					spaceBegin(arr, i+r, j, -2);					
+				}
+			}
+		}
+		else if (direction == 3) // влево
+		{
+			for (int c = 3; c >= 1; c--)
+			{
+				arr[i][j-c] = 4;
+				if (c == 3) {
+					spaceBegin(arr, i, j-c, -2);					
+				}
+			}
+		} 
+		
+		spaceEnd(arr);
+	}
+	
+	private void create1p(int arr[][])
+	{
+		for (int k = 1; k <= 4; k++)
+		{
+			while (true)
+			{
+				// находим случайную позицию на игорвом поле
+				int i = (int)(Math.random() * 10);
+				int j = (int)(Math.random() * 10);
+				
+				// проверка
+				if (arr[i][j] == 0)
+				{
+					arr[i][j] = 1;
+					spaceBegin(arr, i, j, -1);
+					break;
+				}
+			}
+		}
+	}
 }
-
 
 
 
