@@ -39,7 +39,7 @@ public class Card {
 		
 		rank = (number-1)/4;
 		
-		isRed = (suit == 1 || suit == 2);
+		isRed = (suit == 2 || suit == 3);
 		
 	}
 	
